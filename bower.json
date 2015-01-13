@@ -1,0 +1,7 @@
+{
+  "name": "paper-fab-menu#gh-pages",
+  "private": true,
+  "dependencies": {
+    "paper-fab-menu": "cwdoh/paper-fab-menu#master"
+  }
+}
