@@ -40,6 +40,11 @@
       #fam content[select="paper-fab-menu-item"]::content * {
         transition: opacity {{duration}}s, transform {{duration}}s, -moz-transform {{duration}}s, -webkit-transform {{duration}}s;
       }
+			#fam{
+				display: none;
+				margin-bottom: 3.5rem;
+				margin-right: 5px;
+			}
     </style>
 
     <template repeat="{{items}}">
@@ -61,13 +66,13 @@
         }
       </style>
     </template>
-
-    <core-overlay id="overlay" layered backdrop transition="core-transition-fade" on-core-overlay-open="{{overlayOpenedChanged}}"></core-overlay>
+		<template if="{{useOverlay}}">
+    	<core-overlay id="overlay" layered backdrop transition="core-transition-fade" on-core-overlay-open="{{overlayOpenedChanged}}"></core-overlay>
+		</template>
     <div layout vertical center class="container" id="fam">
       <content id="content" select="paper-fab-menu-item"></content>
-      <paper-fab icon="menu" id="trigger" on-click="{{toggle}}"></paper-fab>
     </div>
-
+		<paper-fab icon="menu" id="trigger" on-click="{{toggle}}"></paper-fab>
   </template>
 
   <script>
@@ -80,6 +85,14 @@
       * @default false
       */
       opened: false,
+      /**
+      * .
+      *
+      * @attribute opened
+      * @type boolean
+      * @default false
+      */
+			useOverlay: true,
 
       /**
       * Automactically set delay to each item. This will be deprecated at later version.
@@ -115,7 +128,7 @@
       * @type Float
       * @default 0.3
       */
-      duration: 0.3,
+      duration: 0.8,
 
       /**
       * Set z-index of container to contain whole parts of menu. This will be depth to determine z-orders of elements including paper-fab-menu.
@@ -150,7 +163,7 @@
         this.fire('paper-fab-menu-open', this.opened);
 
         // workaround for multiple backdrops when closing fab-menu.
-        if (!this.opened) {
+        if (!this.opened && this.useOverlay) {
           var backdrops = document.querySelectorAll('html div.core-overlay-backdrop');
 
           if (backdrops.length <= 1)
@@ -189,9 +202,11 @@
       open: function() {
         this.opened = true;
         this.$.trigger.icon = this.closeIcon;
+				this.$.fam.style.display = 'block';
         this.$.trigger.setAttribute("activate", "");
-
-        this.$.overlay.open();
+				if (this.useOverlay){
+					this.$.overlay.open();
+				}
       },
 
       /**
@@ -202,9 +217,11 @@
       close: function() {
         this.opened = false;
         this.$.trigger.icon = this.icon;
+				this.$.fam.style.display = 'none';
         this.$.trigger.removeAttribute("activate");
-
-        this.$.overlay.close();
+				if (this.useOverlay) {
+					this.$.overlay.close();
+				}
       },
 
       update: function() {
